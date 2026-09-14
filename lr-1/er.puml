@@ -1,0 +1,48 @@
+@startuml
+
+entity DATACENTER {
+  * datacenter_id : int <<PK>>
+  --
+  name : varchar
+  location : varchar
+  created_at : date
+}
+
+entity RACK {
+  * rack_id : int <<PK>>
+  --
+  datacenter_id : int <<FK>>
+  rack_name : varchar
+  unit_count : int
+  power_cap : int
+  row : varchar
+}
+
+entity SERVER {
+  * server_id : int <<PK>>
+  --
+  rack_id : int <<FK>>
+  team_id : int <<FK>>
+  hostname : varchar
+  serial_number : varchar
+  rack_position : varchar
+  status : varchar
+  cpu_cores : int
+  ram_gb : int
+  disk_gb : int
+  os_name : varchar
+  installed_at : date
+}
+
+entity TEAM {
+  * team_id : int <<PK>>
+  --
+  name : varchar
+  department : varchar
+}
+
+DATACENTER ||--o{ RACK : contains
+RACK ||--o{ SERVER : hosts
+TEAM ||--o{ SERVER : owns
+
+@enduml
