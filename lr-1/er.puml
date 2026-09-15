@@ -1,4 +1,4 @@
-@startuml
+@startuml er-diagram
 
 entity DATACENTER {
   * datacenter_id : int <<PK>>

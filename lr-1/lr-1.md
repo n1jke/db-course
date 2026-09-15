@@ -1,12 +1,3 @@
-# hints
-er-диаграммы делайте с общепринятыми правилами, вам то ладно но дальше ...  
-стрелки в er, там треугольники, ромбы и тд (т.е наконечники у стрелок и какой тип связи обозначают) и еще какая линия тоже шарить  
-реляционная модель что такое, data types, pk, fk, constrains (может спросить какие знаешь) - обозначить в таблице и объяснить в терминах реляционных бд (мб реляционной алгебры)  
-функциональная зависимость что такое + биективность мб, хз что он там хотел  
-нормальные формы бд (1,2,3,3extendex, ...)  
-почему 4 форма(бойса кода - не должно быть не только зависимостей внутри таблицы(3нф) но еще и не должно быть зависвостей транзитивных) называется 3 расширенной  
-super key?
-
 # Тема: Сервера в дата центрах
 
 # Задания:
@@ -25,6 +16,7 @@ super key?
 - [x] Сформировать максимально полный перечень возможных запросов к базе данных на основе анализа предметной области.
 	- Получить датацентры по
 		- локации
+		- дате создания
 	- Получить стойки по
 		- датацентру
 		- кол-во серверов
@@ -46,37 +38,37 @@ erDiagram
     TEAM ||--o{ SERVER : owns
 
     DATACENTER {
-        int datacenter_id PK
-        varchar name
-        varchar location
+        uuid datacenter_id PK
+        text name
+        text location
         date created_at
     }
     RACK {
-        int rack_id PK
-        int datacenter_id FK
-        varchar rack_name
+        uuid rack_id PK
+        uuid datacenter_id FK
+        text rack_name
         int unit_count
         int power_cap
-        varchar row
+        text row
     }
     SERVER {
-        int server_id PK
-        int rack_id FK
-        int team_id FK
-        varchar hostname
-        varchar serial_number
-        varchar rack_position
-        varchar status
+        uuid server_id PK
+        uuid rack_id FK
+        uuid team_id FK
+        text hostname
+        text serial_number
+        text rack_position
+        text status
         int cpu_cores
         int ram_gb
         int disk_gb
-        varchar os_name
+        text os_name
         date installed_at
     }
     TEAM {
-        int team_id PK
-        varchar name
-        varchar department
+        uuid team_id PK
+        text name
+        text department
     }
 ```
 
@@ -84,7 +76,7 @@ erDiagram
 	- Сущности и их описание:
 
 	| Сущность | Описание |
-	|---|---|
+	| :--- | ---: |
 	| `DATACENTER` | Дата-центр, в котором размещаются стойки с оборудованием |
 	| `RACK` | Стойка внутри дата-центра |
 	| `SERVER` | Физический сервер, установленный в стойке |
@@ -111,6 +103,7 @@ erDiagram
 
 	---
 
+
 	### `RACK`
 
 	| Название поля | Тип | Ограничения |
@@ -124,6 +117,7 @@ erDiagram
 
 	---
 
+
 	### `SERVER`
 
 	| Название поля | Тип | Ограничения |
@@ -132,7 +126,7 @@ erDiagram
 	| `rack_id` | `UUID` | `NOT NULL` |
 	| `team_id` | `UUID` | `NOT NULL` |
 	| `rack_position` | `INTEGER` | `NOT NULL`, `> 0`, уникальное в рамках одной стойки |
-	| `hostname` | `TEXT` | `NOT NULL`, от 1 до 64 символов, UNIQUE |
+	| `hostname` | `TEXT` | `NOT NULL`, от 1 до 64 символов |
 	| `serial_number` | `TEXT` | `NOT NULL`, от 1 до 64 символов, UNIQUE |
 	| `status` | `TEXT` | `NOT NULL`, ENUM: `active`, `maintenance`, `deploying`, `retired` |
 	| `cpu_cores` | `INTEGER` | `NOT NULL`, `> 0` |
@@ -142,6 +136,7 @@ erDiagram
 	| `installed_at` | `TIMESTAMP WITH TIME ZONE` | `NOT NULL`, не больше текущего времени |
 
 	---
+
 
 	### `TEAM`
 
@@ -163,7 +158,7 @@ erDiagram
 	- team
 		- pk - id
 - [x] Выписать функциональные зависимости (рассматривая возможные значения полей таблицы)
-	- (A -> B если внутри отношения R по каждое значение атрибута A связано только с одним атрибутом B, т е знаю А можем определить однозначно В а наоборот не можем)
+	- (A -> B если внутри отношения R по каждое значение атрибута A связано только с одним атрибутом B, т е зная А можем определить однозначно В а наоборот не можем)
 	- datacenter
 		- id -> name, location, created_at
 		- name -> id, location, created_at
@@ -171,7 +166,6 @@ erDiagram
 		- id -> datacenter_id, rack_name, unit_count, power_cap, row
 	- server
 		- id -> rack_id, team_id, hostname, serial_number, rack_position, status, cpu_cores, ram_gb, disk_gb, os_name, installed_at
-		- hostname -> id, rack_id, team_id, serial_number, rack_position, status, cpu_cores, ram_gb, disk_gb, os_name, installed_at
 		- serial_number -> id, rack_id, team_id, hostname, rack_position, status, cpu_cores, ram_gb, disk_gb, os_name, installed_at
 	- team
 		- id -> name, department
